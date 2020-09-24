@@ -1,9 +1,10 @@
 package net.aparsons.sqldump;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.aparsons.sqldump.db.Connectors.Connector;
 import net.aparsons.sqldump.db.SQLDump;
@@ -20,17 +21,14 @@ import org.apache.commons.cli.ParseException;
 public class Launcher {
 
 	/**
-	 * Generate apache-cli options:
-	 *  DB protocol (Mandatory), 
-	 *  address (Mandatory),
-	 *  user (Mandatory),
-	 *  username (Mandatory),
-	 *  password (Mandatory), 
-	 *  query (Mandatory),
-	 *  CSV file path
-	 *  includeHeaders
-
-	 * 
+	 * Create apache-cli options for the following elements:
+	 *  url (Mandatory),
+	 *  username (Mandatory): -user <user>
+	 *  password (Mandatory): -pass <password>
+	 *  query (Mandatory): -sql <query>
+	 *  CSV file path: -f -file <filepath>
+	 *  includeHeaders: -headers
+	 *  All the options contains and argument, with the exception of includeHeaders   
 	 * @return Available command line options
 	 */
 	public static Options getOptions() {
@@ -43,52 +41,99 @@ public class Launcher {
 		urlGroup.setRequired(true);
 		urlGroup.addOption(urlOption);
 		options.addOptionGroup(urlGroup);
-		//Complete the option specification code 
-		//HERE
+		///COMPLETE THE METHOD
+		//
+		final Option userOption = new Option("user", "username" , true, "The database user on whose behalf the connection is being made");
+		final Option passOption = new Option("pass", "password" , true, "The user's password");
+		final Option sqlOption = new Option("sql", "query" , true, "Any SQL statement");
+		
+		final Option fileOption = new Option("f", "file", true, "File path of the report");
+		final Option headersOption = new Option("headers","include-headers", false, "Include column headers in generated file");
+
+		final OptionGroup userGroup = new OptionGroup();
+		userGroup.setRequired(true);
+		userGroup.addOption(userOption);
+		options.addOptionGroup(userGroup);
+		
+		final OptionGroup passGroup = new OptionGroup();
+		passGroup.setRequired(true);
+		passGroup.addOption(passOption);
+		options.addOptionGroup(passGroup);
+		
+		final OptionGroup sqlGroup = new OptionGroup();
+		sqlGroup.setRequired(true);
+		sqlGroup.addOption(sqlOption);
+		options.addOptionGroup(sqlGroup);
+
+		options.addOption(fileOption);
+		options.addOption(headersOption);
 		//
 
 		return options;
 	}
 
-	/**
-	 * Main method parse the command line parameters and call the businees logic
-	 * @param args Command line arguments
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) {
-		try {
-			Map<String, String> param = parse(args);
-			businessLogic(param.get("protocol"), param.get("url"), 
-					param.get("username"), param.get("password"), param.get("sql"), param.get("file"), false);
-		} catch (ParseException pe) {
-			printUsage();
-		}
-	}
+
+
 	
 	/**
-	 * Main method parse the command line parameters and call the businees logic
+	 * This method parse the command line parameters and put to a hash map where the parameter name is key point and the argument is the value.
+	 * The hash map must contain all the required paramenter. If a mandory one is missed, it prints the parameter usage and throws an exception. 
+	 * Use the parameter names defined in getOption method.
 	 * @param consoleParams Command line arguments
 	 * @throws ParseException 
 	 * @throws Exception 
 	 */
 	public static Map<String, String> parse(String[] consoleParams) throws ParseException {
+		Map<String, String> result = new HashMap<String, String>();
 		try {
 			CommandLineParser parser = new GnuParser();
 			CommandLine cmdLine = parser.parse(getOptions(), consoleParams);
 			if(!cmdLine.hasOption("url")) throw new ParseException("No url is specifified");
 			String url = cmdLine.getOptionValue("url");
-			//Complete the parameter parser code 
-			//HERE
-			//
+			
+			//COMPLETE THE METHOD
+			result.put("url", url);
+			if (!cmdLine.hasOption("username")) throw new ParseException("No username is specifified");
+			String username = cmdLine.getOptionValue("username");
+			result.put("username", username);
+			if (!cmdLine.hasOption("password")) throw new ParseException("No password is specifified");	
+			String password = cmdLine.getOptionValue("password");
+			result.put("password", password);
+			if (!cmdLine.hasOption("password")) throw new ParseException("No password is specifified");	
+			String sql = cmdLine.getOptionValue("sql");
+			result.put("sql", sql);
+			if (cmdLine.hasOption("file")) {
+				String file = cmdLine.getOptionValue("sql");
+				result.put("file", file);
+			}
+			if (cmdLine.hasOption("include-headers"))
+				result.put("headers", "True");
+			
 		} catch (ParseException pe) {
 			printUsage();
 			throw pe;
 		}
-		return null;
+		return result;
 	}
 	
 	/**
-	 * Invoke the business logic
+	 * Prints the command line options to the console
+	 */
+	public static String printUsage() {
+		HelpFormatter printer = new HelpFormatter();
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		
+		printer.printUsage(pw, 80, "The command should use the following parameters", getOptions());
+		pw.close();
+		return sw.toString();
+		//COMPLETE THE METHOD
+		
+	}
+	
+	
+	/**
+	 * COMPLETED METHOD
 	 */
 	private static void businessLogic(String protocol, String url, String username, String password, String sql, String file, boolean includeHeaders) {
 		SQLDump dump = new SQLDump(Connector.valueOf(protocol), url, username, password, sql);
@@ -98,15 +143,18 @@ public class Launcher {
 			dump.setHeaders(true);
 		dump.run();
 	}
-
+	
 	/**
-	 * Prints the command line options to the console
+	 * COMPLETED METHOD
 	 */
-	public static void printUsage() {
-		HelpFormatter printer = new HelpFormatter();
-		//Complete the helper code 
-		//HERE
-		//
+	public static void main(String[] args) {
+		try {
+			Map<String, String> param = parse(args);
+			businessLogic(param.get("protocol"), param.get("url"), 
+					param.get("username"), param.get("password"), param.get("sql"), param.get("file"), false);
+		} catch (ParseException pe) {
+			printUsage();
+		}
 	}
 
 }

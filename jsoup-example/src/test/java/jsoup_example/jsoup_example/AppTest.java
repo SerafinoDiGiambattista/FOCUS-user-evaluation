@@ -14,16 +14,16 @@ public class AppTest
     App app;
 		
 	@Test
-	public void getSiteImagesTest() throws IOException {
+	public void getCalciomercatoNewsTest() throws IOException {
 		assertEquals(4, App.getCalciomercatoNews());
 	}
 	@Test
-	public void readExcelFileTest() throws IOException {
+	public void getWinningAwayTeamsTest() throws IOException {
 		assertEquals(184, App.getWinningAwayTeams().size());
 	}
 	
 	@Test
-	public void getHottestDay() throws IOException {
+	public void getDayWithBiggerTemperatureDifference() throws IOException {
 		assertEquals("Martedì 29",App.getDayWithBiggerTemperatureDifference());
 	}
 }

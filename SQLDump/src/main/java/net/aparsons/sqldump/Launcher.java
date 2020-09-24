@@ -41,8 +41,8 @@ public class Launcher {
 		urlGroup.setRequired(true);
 		urlGroup.addOption(urlOption);
 		options.addOptionGroup(urlGroup);
-		///COMPLETE THE METHOD
-		//
+		
+		//COMPLETE THE METHOD
 		final Option userOption = new Option("user", "username" , true, "The database user on whose behalf the connection is being made");
 		final Option passOption = new Option("pass", "password" , true, "The user's password");
 		final Option sqlOption = new Option("sql", "query" , true, "Any SQL statement");
@@ -67,12 +67,23 @@ public class Launcher {
 
 		options.addOption(fileOption);
 		options.addOption(headersOption);
-		//
-
 		return options;
 	}
 
-
+	/**
+	 * Prints the command line options to the console and return print usage as string
+	 */
+	public static String printUsage() {
+		HelpFormatter printer = new HelpFormatter();
+		
+		printer.printHelp("Help", getOptions());
+		//COMPLETE THE METHOD
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		printer.printUsage(pw, 80, "The command should use the following parameters", getOptions());
+		pw.close();
+		return sw.toString();
+	}
 
 	
 	/**
@@ -110,26 +121,13 @@ public class Launcher {
 				result.put("headers", "True");
 			
 		} catch (ParseException pe) {
-			printUsage();
+			System.out.println(printUsage());
 			throw pe;
 		}
 		return result;
 	}
 	
-	/**
-	 * Prints the command line options to the console
-	 */
-	public static String printUsage() {
-		HelpFormatter printer = new HelpFormatter();
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		
-		printer.printUsage(pw, 80, "The command should use the following parameters", getOptions());
-		pw.close();
-		return sw.toString();
-		//COMPLETE THE METHOD
-		
-	}
+
 	
 	
 	/**

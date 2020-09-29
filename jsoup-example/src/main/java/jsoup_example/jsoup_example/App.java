@@ -33,9 +33,6 @@ public class App {
 		Elements images = document.select(".list-item");
 		images.parents();
 		int count = 0;
-//		for (Element image : images) {
-//			if (image.getElementsByClass("list-date-data").get(0).text().toLowerCase().contains("calciomercato")) count ++;
-//		}
 		return count;	
 	}
 
@@ -52,14 +49,7 @@ public class App {
 		scores.parents();
 		
 		List<String> result = new ArrayList();
-//		for (Element score : scores) {
-//			try {
-//			if (Integer.parseInt(score.getElementsByClass("awy").text()) > Integer.parseInt(score.getElementsByClass("hom").text()))
-//				result.add(score.parent().select("div.ply.name").get(1).text());
-//			} catch (NumberFormatException e) {
-//				
-//			}
-//		}
+
 		return result;
 	}
 	
@@ -74,16 +64,7 @@ public class App {
 		Elements weathers = document.select("span.dayDate");
 		String name = "";
 		
-//		int difference = 0;
-//		for (Element weather : weathers ) {
-//			Elements elements = weather.parent().parent().parent().getElementsByClass("temperature");
-//			int min = Integer.parseInt(elements.get(0).text().replace("°", ""));
-//			int max = Integer.parseInt(elements.get(1).text().replace("°", ""));
-//			if (Math.abs(max-min)>difference) {
-//				difference = Math.abs(max-min);
-//				name = weather.text();
-//			}
-//		}
+
 		return(name);
 	}
 	

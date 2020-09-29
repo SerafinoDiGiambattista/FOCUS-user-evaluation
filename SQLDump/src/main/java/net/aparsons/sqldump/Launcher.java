@@ -43,30 +43,6 @@ public class Launcher {
 		options.addOptionGroup(urlGroup);
 		
 		//COMPLETE THE METHOD
-		final Option userOption = new Option("user", "username" , true, "The database user on whose behalf the connection is being made");
-		final Option passOption = new Option("pass", "password" , true, "The user's password");
-		final Option sqlOption = new Option("sql", "query" , true, "Any SQL statement");
-		
-		final Option fileOption = new Option("f", "file", true, "File path of the report");
-		final Option headersOption = new Option("headers","include-headers", false, "Include column headers in generated file");
-
-		final OptionGroup userGroup = new OptionGroup();
-		userGroup.setRequired(true);
-		userGroup.addOption(userOption);
-		options.addOptionGroup(userGroup);
-		
-		final OptionGroup passGroup = new OptionGroup();
-		passGroup.setRequired(true);
-		passGroup.addOption(passOption);
-		options.addOptionGroup(passGroup);
-		
-		final OptionGroup sqlGroup = new OptionGroup();
-		sqlGroup.setRequired(true);
-		sqlGroup.addOption(sqlOption);
-		options.addOptionGroup(sqlGroup);
-
-		options.addOption(fileOption);
-		options.addOption(headersOption);
 		return options;
 	}
 
@@ -78,11 +54,7 @@ public class Launcher {
 		
 		printer.printHelp("Help", getOptions());
 		//COMPLETE THE METHOD
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		printer.printUsage(pw, 80, "The command should use the following parameters", getOptions());
-		pw.close();
-		return sw.toString();
+		return "";
 	}
 
 	
@@ -103,22 +75,7 @@ public class Launcher {
 			String url = cmdLine.getOptionValue("url");
 			
 			//COMPLETE THE METHOD
-			result.put("url", url);
-			if (!cmdLine.hasOption("username")) throw new ParseException("No username is specifified");
-			String username = cmdLine.getOptionValue("username");
-			result.put("username", username);
-			if (!cmdLine.hasOption("password")) throw new ParseException("No password is specifified");	
-			String password = cmdLine.getOptionValue("password");
-			result.put("password", password);
-			if (!cmdLine.hasOption("password")) throw new ParseException("No password is specifified");	
-			String sql = cmdLine.getOptionValue("sql");
-			result.put("sql", sql);
-			if (cmdLine.hasOption("file")) {
-				String file = cmdLine.getOptionValue("sql");
-				result.put("file", file);
-			}
-			if (cmdLine.hasOption("include-headers"))
-				result.put("headers", "True");
+			
 			
 		} catch (ParseException pe) {
 			System.out.println(printUsage());
